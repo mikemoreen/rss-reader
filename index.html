@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>RSS агрегатор</title>
+  </head>
+  <body>
+    <div class="d-flex flex-column min-vh-100">
+      <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title"></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+              <a class="btn btn-primary full-article" href='#' role="button" target="_blank" rel="noopener noreferrer">
+                Читать полностью
+              </a>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <main class="flex-grow-1">
+        <section class="container-fluid bg-dark p-5">
+            <div class="row">
+              <div class="col-md-10 col-lg-8 mx-auto text-white">
+                <h1 class="display-3">RSS агрегатор</h1>
+                <p class="lead">Начните читать RSS сегодня! Это легко, это красиво.</p>
+                <form action="" class="rss-form text-body">
+                  <div class="row g-3">
+                    <div class="col-sm-10 px-2">
+                      <input id="url-input" autofocus type="text" required name="url" aria-label="url" class="form-control form-control-lg w-100 " placeholder="Ссылка RSS">
+                      <label for="url-input">Ссылка RSS</label>
+                    </div>
+                    <div class="col-auto">
+                      <button type="submit" aria-label="add" class="h-100 btn btn-lg btn-primary px-sm-5">
+                        Добавить
+                      </button>
+                    </div>
+                  </div>
+                </form>
+                <p class="text-muted my-1">Пример: https://ru.hexlet.io/lessons.rss</p>
+                <p class="feedback m-0 position-absolute small text-danger"></p>
+              </div>
+            </div>
+        </section>
+        <section class="container-fluid container-xxl p-5">
+          <div class="row">
+            <div class="col-md-10 col-lg-8 order-1 mx-auto posts">
+              
+            </div>
+            <div class="col-md-10 col-lg-4 mx-auto order-0 order-lg-1 feeds">
+
+            </div>
+          </div>
+        </section>
+      </main>
+      <footer class="footer py-3 bg-dark">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-10 col-lg-8 mx-auto">
+              <div class="row justify-content-between">
+                <div class="col-auto">
+                  <a class="text-light" href="https://github.com/mikemoreen/frontend-project-lvl3" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+                      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                    </svg>
+                    <span class="small">mikemoreen</span>
+                  </a>
+                </div>
+                <div class="col-auto text-right">
+                  <a class="small text-light" href="https://ru.hexlet.io/programs/frontend/projects/11" target="_blank">© Hexlet</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
