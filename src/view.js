@@ -1,12 +1,12 @@
 import { includes, find } from 'lodash';
 
-const renderModal = (posts, viewedPosts) => {
-  const postsContainer = document.querySelector('.posts');
+const renderModal = (posts, viewedPosts, elements) => {
+  const postsContainer = elements.post;
   const buttons = postsContainer.querySelectorAll('button');
 
-  const title = document.querySelector('.modal-title');
-  const body = document.querySelector('.modal-body');
-  const link = document.querySelector('.full-article');
+  const { title } = elements;
+  const { body } = elements;
+  const { link } = elements;
 
   buttons.forEach((button) => {
     button.addEventListener('click', () => {
@@ -22,16 +22,16 @@ const renderModal = (posts, viewedPosts) => {
   });
 };
 
-const renderPosts = (state, i18nextInstance) => {
+const renderPosts = (state, elements, i18nextInstance) => {
   const { posts, viewedPosts } = state;
   // Заголовок
-  const postsContainer = document.querySelector('.posts');
+  const postsContainer = elements.posts;
   postsContainer.innerHTML = '';
-  const header = document.createElement('h2');
+  const { header } = elements;
   header.textContent = i18nextInstance.t('posts');
 
   // Таблица с постами
-  const ul = document.createElement('ul');
+  const ul = elements.table;
   ul.className = 'list-group';
 
   const postsHtml = posts.map((item) => `<li class="list-group-item d-flex justify-content-between">
@@ -41,17 +41,17 @@ const renderPosts = (state, i18nextInstance) => {
   ul.innerHTML = postsHtml.join('');
   postsContainer.prepend(ul);
   postsContainer.prepend(header);
-  renderModal(posts, viewedPosts);
+  renderModal(posts, viewedPosts, elements);
 };
 
-const renderFeeds = (state, i18nextInstance) => {
+const renderFeeds = (state, i18nextInstance, elements) => {
   const arrayOfFeeds = state.feeds;
-  const feedsContainer = document.querySelector('.feeds');
+  const feedsContainer = elements.feeds;
   feedsContainer.innerHTML = '';
-  const header = document.createElement('h2');
+  const { header } = elements;
   header.textContent = i18nextInstance.t('feeds');
   // Таблица с фидами
-  const ul = document.createElement('ul');
+  const ul = elements.table;
   ul.className = 'list-group border-0 rounded-0';
 
   const feedsHtml = arrayOfFeeds.map((item) => `<li class="list-group-item border-0 border-end-0>
@@ -63,17 +63,17 @@ const renderFeeds = (state, i18nextInstance) => {
   feedsContainer.prepend(header);
 };
 
-const renderForm = (state, status, i18nextInstance) => {
-  const input = document.querySelector('input');
-  const feedback = document.querySelector('.feedback');
-  if (status === 'loading') {
+const renderForm = (state, elements, i18nextInstance) => {
+  const { input } = elements;
+  const { feedback } = elements;
+  if (state.status === 'loading') {
     feedback.classList.remove('text-danger');
     feedback.classList.add('text-success');
     feedback.textContent = 'Загрузка данных...';
     input.value = '';
     input.focus();
   }
-  if (status === 'failed') {
+  if (state.status === 'failed') {
     if (state.form.error === 'errors.duplicateUrl') {
       input.classList.add('is-invalid');
       feedback.classList.remove('text-success');
@@ -116,7 +116,7 @@ const renderForm = (state, status, i18nextInstance) => {
     }
   }
 
-  if (status === 'loaded') {
+  if (state.status === 'loaded') {
     if (state.form.error === 'loading.success') {
       input.classList.remove('is-invalid');
       feedback.classList.remove('text-danger');

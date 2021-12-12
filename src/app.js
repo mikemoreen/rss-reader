@@ -1,9 +1,9 @@
+/* eslint-disable no-param-reassign */
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import onChange from 'on-change';
 import * as yup from 'yup';
 import _ from 'lodash';
-import bootstrap from 'bootstrap';
 import i18next from 'i18next';
 import parse from './parser';
 import { renderPosts, renderFeeds, renderForm } from './view';
@@ -77,29 +77,37 @@ const app = (i18nextInstance) => {
       error: '',
     },
   };
+  const elements = {
+    form: document.querySelector('form'),
+    input: document.querySelector('input'),
+    title: document.querySelector('.modal-title'),
+    body: document.querySelector('.modal-body'),
+    link: document.querySelector('.full-article'),
+    header: document.createElement('h2'),
+    table: document.createElement('ul'),
+    feeds: document.querySelector('.feeds'),
+    posts: document.querySelector('.posts'),
+  };
   const watcherState = onChange(state, (path, value) => {
     if (path === 'form.status' && value === 'loaded') {
-      renderForm(state, value, i18nextInstance);
-      renderFeeds(state, i18nextInstance);
-      renderPosts(state, i18nextInstance);
+      renderForm(state, elements, i18nextInstance);
+      renderFeeds(state, elements, i18nextInstance);
+      renderPosts(state, elements, i18nextInstance);
     }
     if (path === 'form.status' && value === 'loading') {
-      renderForm(state, value);
+      renderForm(state, elements);
     }
     if (path === 'form.status' && value === 'failed') {
-      renderForm(state, value, i18nextInstance);
+      renderForm(state, elements, i18nextInstance);
     }
     if (path === 'posts') {
-      renderPosts(state, i18nextInstance);
+      renderPosts(state, elements, i18nextInstance);
     }
   });
 
-  const input = document.querySelector('input');
-  const form = document.querySelector('form');
-
-  form.addEventListener('submit', (e) => {
+  elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const url = input.value;
+    const url = elements.input.value;
     const resultOfValidation = validate(url);
     watcherState.form.status = 'loading';
 
