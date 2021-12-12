@@ -5,11 +5,9 @@ import * as yup from 'yup';
 import _ from 'lodash';
 import bootstrap from 'bootstrap';
 import i18next from 'i18next';
-import parse from './parser.js';
-import { renderPosts, renderFeeds, renderForm } from './view.js';
-import ru from './locales/ru.js';
-
-const urlTest = 'https://ru.hexlet.io/lessons.rss';
+import parse from './parser';
+import { renderPosts, renderFeeds, renderForm } from './view';
+import ru from './locales/ru';
 
 const proxy = 'https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=';
 
