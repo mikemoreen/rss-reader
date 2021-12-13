@@ -1,13 +1,12 @@
 /* eslint-disable no-param-reassign */
-import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import onChange from 'on-change';
 import * as yup from 'yup';
 import _ from 'lodash';
 import i18next from 'i18next';
-import parse from './parser';
-import { renderPosts, renderFeeds, renderForm } from './view';
-import ru from './locales/ru';
+import parse from './parser.js';
+import { renderPosts, renderFeeds, renderForm } from './view.js';
+import ru from './locales/ru.js';
 
 const proxy = 'https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=';
 
@@ -83,10 +82,9 @@ const app = (i18nextInstance) => {
     title: document.querySelector('.modal-title'),
     body: document.querySelector('.modal-body'),
     link: document.querySelector('.full-article'),
-    header: document.createElement('h2'),
-    table: document.createElement('ul'),
     feeds: document.querySelector('.feeds'),
     posts: document.querySelector('.posts'),
+    feedback: document.querySelector('.feedback'),
   };
   const watcherState = onChange(state, (path, value) => {
     if (path === 'form.status' && value === 'loaded') {
@@ -95,7 +93,7 @@ const app = (i18nextInstance) => {
       renderPosts(state, elements, i18nextInstance);
     }
     if (path === 'form.status' && value === 'loading') {
-      renderForm(state, elements);
+      renderForm(state, elements, i18nextInstance);
     }
     if (path === 'form.status' && value === 'failed') {
       renderForm(state, elements, i18nextInstance);
@@ -141,15 +139,17 @@ const app = (i18nextInstance) => {
   });
 };
 const runApp = async () => {
-  const i18nextInstance = i18next.createInstance();
-  await i18nextInstance.init({
+  const i18nextIn = i18next.createInstance();
+
+  return i18nextIn.init({
     lng: 'ru',
     debug: true,
     resources: {
       ru,
     },
-  });
-
-  app(i18nextInstance);
+  })
+    .then((t) => {
+      app(t);
+    });
 };
 export default runApp;

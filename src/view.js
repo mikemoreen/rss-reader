@@ -1,12 +1,10 @@
 import { includes, find } from 'lodash';
 
-const renderModal = (posts, viewedPosts, elements) => {
-  const postsContainer = elements.post;
+const renderModal = (state, elements) => {
+  const { posts, viewedPosts } = state;
+  const postsContainer = elements.posts;
   const buttons = postsContainer.querySelectorAll('button');
-
-  const { title } = elements;
-  const { body } = elements;
-  const { link } = elements;
+  const { title, body, link } = elements;
 
   buttons.forEach((button) => {
     button.addEventListener('click', () => {
@@ -24,34 +22,32 @@ const renderModal = (posts, viewedPosts, elements) => {
 
 const renderPosts = (state, elements, i18nextInstance) => {
   const { posts, viewedPosts } = state;
-  // Заголовок
   const postsContainer = elements.posts;
-  postsContainer.innerHTML = '';
-  const { header } = elements;
-  header.textContent = i18nextInstance.t('posts');
+  const header = document.createElement('h2');
+  const ul = document.createElement('ul');
 
-  // Таблица с постами
-  const ul = elements.table;
+  postsContainer.innerHTML = '';
+  header.textContent = i18nextInstance('posts');
   ul.className = 'list-group';
 
   const postsHtml = posts.map((item) => `<li class="list-group-item d-flex justify-content-between">
         <a href=${item.link} target="_blank" class=${includes(viewedPosts, item.title) ? 'fw-normal' : 'fw-bold'}>${item.title}</a>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal" data-id=${item.id}>${i18nextInstance.t('button')}</button>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal" data-id=${item.id}>${i18nextInstance('button')}</button>
       </li>`);
   ul.innerHTML = postsHtml.join('');
   postsContainer.prepend(ul);
   postsContainer.prepend(header);
-  renderModal(posts, viewedPosts, elements);
+  renderModal(state, elements);
 };
 
-const renderFeeds = (state, i18nextInstance, elements) => {
+const renderFeeds = (state, elements, i18nextInstance) => {
   const arrayOfFeeds = state.feeds;
   const feedsContainer = elements.feeds;
+  const header = document.createElement('h2');
+  const ul = document.createElement('ul');
+
   feedsContainer.innerHTML = '';
-  const { header } = elements;
-  header.textContent = i18nextInstance.t('feeds');
-  // Таблица с фидами
-  const ul = elements.table;
+  header.textContent = i18nextInstance('feeds');
   ul.className = 'list-group border-0 rounded-0';
 
   const feedsHtml = arrayOfFeeds.map((item) => `<li class="list-group-item border-0 border-end-0>
@@ -59,26 +55,27 @@ const renderFeeds = (state, i18nextInstance, elements) => {
                 <p class="m-0 small text-black-50">${item[1]}</p>
             </li>`);
   ul.innerHTML = feedsHtml.join('');
+  console.log(feedsHtml);
   feedsContainer.prepend(ul);
   feedsContainer.prepend(header);
 };
 
 const renderForm = (state, elements, i18nextInstance) => {
-  const { input } = elements;
-  const { feedback } = elements;
-  if (state.status === 'loading') {
+  const { input, feedback } = elements;
+
+  if (state.form.status === 'loading') {
     feedback.classList.remove('text-danger');
     feedback.classList.add('text-success');
     feedback.textContent = 'Загрузка данных...';
     input.value = '';
     input.focus();
   }
-  if (state.status === 'failed') {
+  if (state.form.status === 'failed') {
     if (state.form.error === 'errors.duplicateUrl') {
       input.classList.add('is-invalid');
       feedback.classList.remove('text-success');
       feedback.classList.add('text-danger');
-      feedback.textContent = i18nextInstance.t('errors.duplicateUrl');
+      feedback.textContent = i18nextInstance('errors.duplicateUrl');
       input.value = '';
       input.focus();
     }
@@ -86,7 +83,7 @@ const renderForm = (state, elements, i18nextInstance) => {
       input.classList.add('is-invalid');
       feedback.classList.remove('text-success');
       feedback.classList.add('text-danger');
-      feedback.textContent = i18nextInstance.t('errors.incorrectUrl');
+      feedback.textContent = i18nextInstance('errors.incorrectUrl');
       input.value = '';
       input.focus();
     }
@@ -94,7 +91,7 @@ const renderForm = (state, elements, i18nextInstance) => {
       input.classList.add('is-invalid');
       feedback.classList.remove('text-success');
       feedback.classList.add('text-danger');
-      feedback.textContent = i18nextInstance.t('errors.networkError');
+      feedback.textContent = i18nextInstance('errors.networkError');
       input.value = '';
       input.focus();
     }
@@ -102,7 +99,7 @@ const renderForm = (state, elements, i18nextInstance) => {
       input.classList.add('is-invalid');
       feedback.classList.remove('text-success');
       feedback.classList.add('text-danger');
-      feedback.textContent = i18nextInstance.t('errors.parseError');
+      feedback.textContent = i18nextInstance('errors.parseError');
       input.value = '';
       input.focus();
     }
@@ -110,18 +107,18 @@ const renderForm = (state, elements, i18nextInstance) => {
       input.classList.add('is-invalid');
       feedback.classList.remove('text-success');
       feedback.classList.add('text-danger');
-      feedback.textContent = i18nextInstance.t('errors.unknown');
+      feedback.textContent = i18nextInstance('errors.unknown');
       input.value = '';
       input.focus();
     }
   }
 
-  if (state.status === 'loaded') {
+  if (state.form.status === 'loaded') {
     if (state.form.error === 'loading.success') {
       input.classList.remove('is-invalid');
       feedback.classList.remove('text-danger');
       feedback.classList.add('text-success');
-      feedback.textContent = i18nextInstance.t('loading.success');
+      feedback.textContent = i18nextInstance('loading.success');
       input.value = '';
       input.focus();
     }
