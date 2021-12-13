@@ -1,4 +1,4 @@
-build:
+run:
 	npm run build
 
 install:
@@ -10,6 +10,6 @@ lint:
 start:
 	npm start
 
-run:
+build:
 	rm -rf dist
 	NODE_ENV=production npx webpack
