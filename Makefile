@@ -1,4 +1,4 @@
-run:
+build:
 	npm run build
 
 install:
@@ -7,9 +7,9 @@ install:
 lint:
 	npx eslint .
 
-develop:
-	npx webpack-dev-server
+start:
+	npm start
 
-build:
+run:
 	rm -rf dist
 	NODE_ENV=production npx webpack
