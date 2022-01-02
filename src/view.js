@@ -1,24 +1,4 @@
-import { includes, find } from 'lodash';
-
-const renderModal = (state, elements) => {
-  const { posts, viewedPosts } = state;
-  const postsContainer = elements.posts;
-  const buttons = postsContainer.querySelectorAll('button');
-  const { title, body, link } = elements;
-
-  buttons.forEach((button) => {
-    button.addEventListener('click', () => {
-      const { id } = button.dataset;
-      const post = find(posts, (obj) => obj.id === id);
-      body.textContent = post.description;
-      title.textContent = post.title;
-      link.href = post.link;
-      if (!includes(viewedPosts, post.title)) {
-        viewedPosts.push(post.title);
-      }
-    });
-  });
-};
+import { includes } from 'lodash';
 
 const renderPosts = (state, elements, i18nextInstance) => {
   const { posts, viewedPosts } = state;
@@ -37,7 +17,36 @@ const renderPosts = (state, elements, i18nextInstance) => {
   ul.innerHTML = postsHtml.join('');
   postsContainer.prepend(ul);
   postsContainer.prepend(header);
-  renderModal(state, elements);
+
+  const { title, body, link } = elements;
+
+  postsContainer.addEventListener('click', (e) => {
+    const { id } = e.target.dataset;
+    const post = posts.find((obj) => obj.id === id);
+    if (!post) {
+      return;
+    }
+    body.textContent = post.description;
+    title.textContent = post.title;
+    link.href = post.link;
+    if (!includes(viewedPosts, post.title)) {
+      viewedPosts.push(post.title);
+      renderPosts(state, elements, i18nextInstance);
+    }
+  });
+  // buttons.forEach((button) => {
+  //   button.addEventListener('click', () => {
+  //     console.log(button)
+  //     const { id } = button.dataset;
+  //     const post = find(posts, (obj) => obj.id === id);
+  //     body.textContent = post.description;
+  //     title.textContent = post.title;
+  //     link.href = post.link;
+  //     if (!includes(viewedPosts, post.title)) {
+  //       viewedPosts.push(post.title);
+  //     }
+  //   });
+  // });
 };
 
 const renderFeeds = (state, elements, i18nextInstance) => {
@@ -55,7 +64,6 @@ const renderFeeds = (state, elements, i18nextInstance) => {
                 <p class="m-0 small text-black-50">${item[1]}</p>
             </li>`);
   ul.innerHTML = feedsHtml.join('');
-  console.log(feedsHtml);
   feedsContainer.prepend(ul);
   feedsContainer.prepend(header);
 };

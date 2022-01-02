@@ -8,7 +8,7 @@ import parse from './parser.js';
 import { renderPosts, renderFeeds, renderForm } from './view.js';
 import ru from './locales/ru.js';
 
-const proxy = 'https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=';
+const timeToUpdatePosts = 4000;
 
 const setId = (posts) => {
   const postsWithId = posts.map((post) => {
@@ -18,10 +18,15 @@ const setId = (posts) => {
   return postsWithId;
 };
 
-const outputError = (error, watcherState) => {
+const addProxy = (url) => {
+  const proxy = 'https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=';
+  return new URL(`${proxy}${url}`);
+};
+
+const generateErrorMessage = (error, watcherState) => {
   if (axios.isAxiosError(error)) {
     watcherState.form.error = 'errors.networkError';
-  } else if (error === 'parse error') {
+  } else if (error === "resource doesn't contain valid Rss") {
     watcherState.form.error = 'errors.parseError';
   } else {
     watcherState.form.error = 'errors.unknown';
@@ -41,12 +46,22 @@ const validate = (url) => {
     return err.message;
   }
 };
+const addPost = (state, contents) => {
+  const dataFromRss = parse(contents);
+  const { title, description, posts } = dataFromRss;
+  const allPosts = [...posts, ...state.posts];
+  const postsWithId = setId(allPosts);
+  state.posts = postsWithId;
+  const allFeeds = [[title, description], ...state.feeds];
+  state.feeds = allFeeds;
+};
+
 const updatePosts = (state, watcherState) => {
-  const urls = state.form.uploadedUrls.slice().reverse();
-  if (state.form.uploadedUrls.length === 0) {
+  const urls = state.form.urls.slice().reverse();
+  if (state.form.urls.length === 0) {
     return;
   }
-  const promises = urls.map((url) => axios.get(`${proxy}${encodeURIComponent(url)}`)
+  const promises = urls.map((url) => axios.get(addProxy(url))
     .then((response) => response.data.contents)
     .then((contents) => {
       const dataFromRss = parse(contents);
@@ -59,10 +74,7 @@ const updatePosts = (state, watcherState) => {
     .then((array) => {
       watcherState.posts = array;
     })
-    .catch((error) => {
-      outputError(error, watcherState);
-    })
-    .finally(() => setTimeout(() => updatePosts(state, watcherState), 4000));
+    .finally(() => setTimeout(() => updatePosts(state, watcherState), timeToUpdatePosts));
 };
 
 const app = (i18nextInstance) => {
@@ -71,7 +83,7 @@ const app = (i18nextInstance) => {
     posts: [],
     viewedPosts: [],
     form: {
-      uploadedUrls: [],
+      urls: [],
       status: 'filling',
       error: '',
     },
@@ -109,31 +121,23 @@ const app = (i18nextInstance) => {
     const resultOfValidation = validate(url);
     watcherState.form.status = 'loading';
 
-    if (state.form.uploadedUrls.includes(url)) {
+    if (state.form.urls.includes(url)) {
       watcherState.form.error = 'errors.duplicateUrl';
       watcherState.form.status = 'failed';
     } else if (resultOfValidation === 'notUrl') {
       watcherState.form.error = 'errors.incorrectUrl';
       watcherState.form.status = 'failed';
     } else if (resultOfValidation === null) {
-      watcherState.form.uploadedUrls.push(url);
-      axios.get(`${proxy}${encodeURIComponent(url)}`)
+      watcherState.form.urls.push(url);
+      axios.get(addProxy(url))
         .then((response) => response.data.contents)
         .then((contents) => {
-          const dataFromRss = parse(contents);
-          const { title, description, posts } = dataFromRss;
-          // Посты
-          const allPosts = [...posts, ...state.posts];
-          const postsWithId = setId(allPosts);
-          state.posts = postsWithId;
-          // Фиды
-          const allFeeds = [[title, description], ...state.feeds];
-          state.feeds = allFeeds;
+          addPost(state, contents);
           watcherState.form.error = 'loading.success';
           watcherState.form.status = 'loaded';
-          setTimeout(() => updatePosts(state, watcherState), 2000);
+          setTimeout(() => updatePosts(state, watcherState), 4000);
         }).catch((error) => {
-          outputError(error, watcherState);
+          generateErrorMessage(error, watcherState);
         });
     }
   });

@@ -17,7 +17,7 @@ const parse = (data) => {
       posts: items,
     };
   } catch {
-    const error = new Error('parse error');
+    const error = new Error("resource doesn't contain valid Rss");
     throw error;
   }
 };

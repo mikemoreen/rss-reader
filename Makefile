@@ -11,5 +11,4 @@ start:
 	npm start
 
 run:
-	rm -rf dist
 	NODE_ENV=production npx webpack
