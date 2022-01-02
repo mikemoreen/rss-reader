@@ -1,7 +1,6 @@
+const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const path = require('path');
-
 module.exports = {
   devtool: "eval-cheap-source-map",
   mode: process.env.NODE_ENV || 'development',
@@ -31,3 +30,5 @@ module.exports = {
     }),
   ],
 };
+
+
