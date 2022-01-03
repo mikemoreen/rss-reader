@@ -57,7 +57,8 @@ const addPost = (state, contents) => {
 };
 
 const updatePosts = (state, watcherState) => {
-  const urls = state.form.urls.slice().reverse();
+  // const urls = state.form.urls.slice().reverse();
+  const urls = state.form.urls
   if (state.form.urls.length === 0) {
     return;
   }
@@ -72,7 +73,7 @@ const updatePosts = (state, watcherState) => {
   Promise.all(promises)
     .then((arrayOfNewPosts) => _.flatten(arrayOfNewPosts))
     .then((array) => {
-      watcherState.posts = array;
+      watcherState.posts = _.reverse(array);
     })
     .finally(() => setTimeout(() => updatePosts(state, watcherState), timeToUpdatePosts));
 };
