@@ -57,7 +57,7 @@ const addPost = (state, contents) => {
 };
 
 const updatePosts = (state, watcherState) => {
-  const urls = state.form.urls
+  const urls = state.form.urls;
   if (state.form.urls.length === 0) {
     return;
   }
