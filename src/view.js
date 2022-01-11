@@ -56,7 +56,7 @@ const renderFeeds = (state, elements, i18nextInstance) => {
 };
 
 const renderForm = (state, elements, i18nextInstance) => {
-  const { input, feedback } = elements;
+  const { input, feedback, button } = elements;
   const { status, error } = state.form;
   const formErrors = {
     'errors.duplicateUrl': i18nextInstance('errors.duplicateUrl'),
@@ -67,12 +67,14 @@ const renderForm = (state, elements, i18nextInstance) => {
     'loading.success': i18nextInstance('loading.success'),
   };
   if (status === 'loading') {
+    button.setAttribute('disabled', 'disabled');
     input.setAttribute('readonly', true);
     feedback.classList.remove('text-danger');
     feedback.classList.add('text-success');
     feedback.textContent = 'Загрузка данных...';
   }
   if (status === 'failed') {
+    button.removeAttribute('disabled');
     input.removeAttribute('readonly');
     input.classList.add('is-invalid');
     feedback.classList.remove('text-success');
@@ -81,6 +83,7 @@ const renderForm = (state, elements, i18nextInstance) => {
   }
 
   if (status === 'loaded') {
+    button.removeAttribute('disabled');
     input.removeAttribute('readonly');
     input.classList.remove('is-invalid');
     feedback.classList.remove('text-danger');

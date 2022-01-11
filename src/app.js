@@ -100,6 +100,7 @@ const app = (i18nextInstance) => {
     feeds: document.querySelector('.feeds'),
     posts: document.querySelector('.posts'),
     feedback: document.querySelector('.feedback'),
+    button: document.querySelector('#button'),
   };
   const watcherState = onChange(state, (path, value) => {
     if (path === 'form.status' && value === 'loaded') {
