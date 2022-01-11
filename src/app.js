@@ -18,15 +18,18 @@ const setId = (posts) => {
   return postsWithId;
 };
 
-const addProxy = (url) => {
-  const proxy = 'https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=';
-  return new URL(`${proxy}${url}`);
+const addProxyToUrl = (link) => {
+  const proxy = 'https://hexlet-allorigins.herokuapp.com/get';
+  const url = new URL(proxy);
+  url.searchParams.append('disableCache', true);
+  url.searchParams.append('url', link);
+  return url;
 };
 
 const generateErrorMessage = (error, watcherState) => {
   if (axios.isAxiosError(error)) {
     watcherState.form.error = 'errors.networkError';
-  } else if (error === "resource doesn't contain valid Rss") {
+  } else if (error.isParseError) {
     watcherState.form.error = 'errors.parseError';
   } else {
     watcherState.form.error = 'errors.unknown';
@@ -61,7 +64,7 @@ const updatePosts = (state, watcherState) => {
   if (state.form.urls.length === 0) {
     return;
   }
-  const promises = urls.map((url) => axios.get(addProxy(url))
+  const promises = urls.map((url) => axios.get(addProxyToUrl(url))
     .then((response) => response.data.contents)
     .then((contents) => {
       const dataFromRss = parse(contents);
@@ -70,7 +73,7 @@ const updatePosts = (state, watcherState) => {
       return newPostsFromRssWithId;
     }));
   Promise.all(promises)
-    .then((arrayOfNewPosts) => _.flatten(arrayOfNewPosts))
+    .then((posts) => _.flatten(posts))
     .then((array) => {
       watcherState.posts = _.reverse(array);
     })
@@ -129,13 +132,13 @@ const app = (i18nextInstance) => {
       watcherState.form.status = 'failed';
     } else if (resultOfValidation === null) {
       watcherState.form.urls.push(url);
-      axios.get(addProxy(url))
+      axios.get(addProxyToUrl(url))
         .then((response) => response.data.contents)
         .then((contents) => {
           addPost(state, contents);
           watcherState.form.error = 'loading.success';
           watcherState.form.status = 'loaded';
-          setTimeout(() => updatePosts(state, watcherState), 4000);
+          setTimeout(() => updatePosts(state, watcherState), timeToUpdatePosts);
         }).catch((error) => {
           generateErrorMessage(error, watcherState);
         });
@@ -147,13 +150,11 @@ const runApp = async () => {
 
   return i18nextIn.init({
     lng: 'ru',
-    debug: true,
+    debug: false,
     resources: {
       ru,
     },
   })
-    .then((t) => {
-      app(t);
-    });
+    .then(app);
 };
 export default runApp;

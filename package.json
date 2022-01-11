@@ -2,7 +2,7 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "Rss - reader",
-  "main": "./src/index.js",
+  "main": "./src/app.js",
   "type": "module",
   "scripts": {
     "test": "jest",

@@ -1,8 +1,13 @@
 const parse = (data) => {
-  try {
+  
     const parser = new DOMParser();
     const DOM = parser.parseFromString(data, 'text/xml');
-
+    const parseError = DOM.querySelector('parsererror');
+    if (parseError) {
+      const error = new Error(parseError.textContent);
+      error.isParseError = true;
+      throw error;
+    }
     const channelTitle = DOM.querySelector('channel > title');
     const channelDescription = DOM.querySelector('channel > description');
     const items = [...DOM.querySelectorAll('item')]
@@ -16,9 +21,6 @@ const parse = (data) => {
       description: channelDescription.textContent,
       posts: items,
     };
-  } catch {
-    const error = new Error("resource doesn't contain valid Rss");
-    throw error;
-  }
+     
 };
 export default parse;

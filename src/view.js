@@ -34,19 +34,6 @@ const renderPosts = (state, elements, i18nextInstance) => {
       renderPosts(state, elements, i18nextInstance);
     }
   });
-  // buttons.forEach((button) => {
-  //   button.addEventListener('click', () => {
-  //     console.log(button)
-  //     const { id } = button.dataset;
-  //     const post = find(posts, (obj) => obj.id === id);
-  //     body.textContent = post.description;
-  //     title.textContent = post.title;
-  //     link.href = post.link;
-  //     if (!includes(viewedPosts, post.title)) {
-  //       viewedPosts.push(post.title);
-  //     }
-  //   });
-  // });
 };
 
 const renderFeeds = (state, elements, i18nextInstance) => {
@@ -70,66 +57,36 @@ const renderFeeds = (state, elements, i18nextInstance) => {
 
 const renderForm = (state, elements, i18nextInstance) => {
   const { input, feedback } = elements;
-
-  if (state.form.status === 'loading') {
+  const {status, error} = state.form;
+  const formErrors = {
+    'errors.duplicateUrl':i18nextInstance('errors.duplicateUrl'),
+    'errors.incorrectUrl':i18nextInstance('errors.incorrectUrl'),
+    'errors.networkError':i18nextInstance('errors.networkError'),
+    'errors.parseError':i18nextInstance('errors.parseError'),
+    'errors.unknown':i18nextInstance('errors.unknown'),
+    'loading.success':i18nextInstance('loading.success'),
+  }
+  if (status === 'loading') {
     feedback.classList.remove('text-danger');
     feedback.classList.add('text-success');
     feedback.textContent = 'Загрузка данных...';
-    input.value = '';
-    input.focus();
+    
   }
-  if (state.form.status === 'failed') {
-    if (state.form.error === 'errors.duplicateUrl') {
-      input.classList.add('is-invalid');
-      feedback.classList.remove('text-success');
-      feedback.classList.add('text-danger');
-      feedback.textContent = i18nextInstance('errors.duplicateUrl');
-      input.value = '';
-      input.focus();
-    }
-    if (state.form.error === 'errors.incorrectUrl') {
-      input.classList.add('is-invalid');
-      feedback.classList.remove('text-success');
-      feedback.classList.add('text-danger');
-      feedback.textContent = i18nextInstance('errors.incorrectUrl');
-      input.value = '';
-      input.focus();
-    }
-    if (state.form.error === 'errors.networkError') {
-      input.classList.add('is-invalid');
-      feedback.classList.remove('text-success');
-      feedback.classList.add('text-danger');
-      feedback.textContent = i18nextInstance('errors.networkError');
-      input.value = '';
-      input.focus();
-    }
-    if (state.form.error === 'errors.parseError') {
-      input.classList.add('is-invalid');
-      feedback.classList.remove('text-success');
-      feedback.classList.add('text-danger');
-      feedback.textContent = i18nextInstance('errors.parseError');
-      input.value = '';
-      input.focus();
-    }
-    if (state.form.error === 'errors.unknown') {
-      input.classList.add('is-invalid');
-      feedback.classList.remove('text-success');
-      feedback.classList.add('text-danger');
-      feedback.textContent = i18nextInstance('errors.unknown');
-      input.value = '';
-      input.focus();
-    }
+  if (status === 'failed') {
+    input.classList.add('is-invalid');
+    feedback.classList.remove('text-success');
+    feedback.classList.add('text-danger');
+    feedback.textContent = formErrors[error];
   }
 
-  if (state.form.status === 'loaded') {
-    if (state.form.error === 'loading.success') {
+  if (status === 'loaded') {
       input.classList.remove('is-invalid');
       feedback.classList.remove('text-danger');
       feedback.classList.add('text-success');
-      feedback.textContent = i18nextInstance('loading.success');
-      input.value = '';
-      input.focus();
-    }
+      feedback.textContent = formErrors[error];
   }
+  input.value = '';
+  input.focus();
+
 };
 export { renderPosts, renderFeeds, renderForm };
