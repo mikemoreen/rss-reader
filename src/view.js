@@ -57,20 +57,19 @@ const renderFeeds = (state, elements, i18nextInstance) => {
 
 const renderForm = (state, elements, i18nextInstance) => {
   const { input, feedback } = elements;
-  const {status, error} = state.form;
+  const { status, error } = state.form;
   const formErrors = {
-    'errors.duplicateUrl':i18nextInstance('errors.duplicateUrl'),
-    'errors.incorrectUrl':i18nextInstance('errors.incorrectUrl'),
-    'errors.networkError':i18nextInstance('errors.networkError'),
-    'errors.parseError':i18nextInstance('errors.parseError'),
-    'errors.unknown':i18nextInstance('errors.unknown'),
-    'loading.success':i18nextInstance('loading.success'),
-  }
+    'errors.duplicateUrl': i18nextInstance('errors.duplicateUrl'),
+    'errors.incorrectUrl': i18nextInstance('errors.incorrectUrl'),
+    'errors.networkError': i18nextInstance('errors.networkError'),
+    'errors.parseError': i18nextInstance('errors.parseError'),
+    'errors.unknown': i18nextInstance('errors.unknown'),
+    'loading.success': i18nextInstance('loading.success'),
+  };
   if (status === 'loading') {
     feedback.classList.remove('text-danger');
     feedback.classList.add('text-success');
     feedback.textContent = 'Загрузка данных...';
-    
   }
   if (status === 'failed') {
     input.classList.add('is-invalid');
@@ -80,13 +79,12 @@ const renderForm = (state, elements, i18nextInstance) => {
   }
 
   if (status === 'loaded') {
-      input.classList.remove('is-invalid');
-      feedback.classList.remove('text-danger');
-      feedback.classList.add('text-success');
-      feedback.textContent = formErrors[error];
+    input.classList.remove('is-invalid');
+    feedback.classList.remove('text-danger');
+    feedback.classList.add('text-success');
+    feedback.textContent = formErrors[error];
   }
   input.value = '';
   input.focus();
-
 };
 export { renderPosts, renderFeeds, renderForm };
